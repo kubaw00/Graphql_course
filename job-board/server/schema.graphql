@@ -1,9 +1,10 @@
 type Query {
-  job: Job
+  job: [Job!]
 }
 
 type Job {
-  title: String
-  descritpion: String
-  id: ID
+  title: String!
+  description: String!
+  date: String!
+  id: ID!
 }
