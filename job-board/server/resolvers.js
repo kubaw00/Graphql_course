@@ -1,5 +1,11 @@
 export const resolvers = {
   Query: {
-    greeting: () => 'Hello World',
+    job: () => {
+      return {
+        id: 'test-id',
+        title: () => 'Example title',
+        description: () => 'Example description',
+      };
+    },
   },
 };
