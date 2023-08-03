@@ -29,7 +29,10 @@ export const resolvers = {
   },
 
   Mutation: {
-    createJob: (_root, { input: { title, description } }) => {
+    createJob: (_root, { input: { title, description } }, { auth }) => {
+      if (!auth) {
+        throw authorizationError('You shoud be authenticated');
+      }
       const companyId = 'FjcJCHJALA4i';
 
       return createJob({ companyId, title, description });
@@ -52,6 +55,12 @@ export const resolvers = {
 
 function toISODate(value) {
   return value.slice(0, 'dd-mm-yyyy'.length);
+}
+
+function authorizationError(message) {
+  return new GraphQLError(message, {
+    extensions: { code: 'NOT_AUTORIZED' },
+  });
 }
 
 function customError(message) {
