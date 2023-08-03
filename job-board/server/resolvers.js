@@ -37,9 +37,35 @@ export const resolvers = {
 
       return createJob({ companyId: user.companyId, title, description });
     },
-    deleteJob: (_root, { id }) => deleteJob(id),
-    updateJob: (_root, { input: { id, title, description } }) => {
-      return updateJob({ id, title, description });
+    deleteJob: async (_root, { id }, { user }) => {
+      if (!user) {
+        throw authorizationError('You shoud be authenticated');
+      }
+
+      const job = await deleteJob(id, user.companyId);
+      if (!job) {
+        throw customError('No Job found with id ' + id);
+      }
+      return job;
+    },
+    updateJob: async (
+      _root,
+      { input: { id, title, description } },
+      { user }
+    ) => {
+      if (!user) {
+        throw authorizationError('You shoud be authenticated');
+      }
+      const job = await updateJob({
+        id,
+        title,
+        description,
+        companyId: user.companyId,
+      });
+      if (!job) {
+        throw customError('No Job found with id ' + id);
+      }
+      return job;
     },
   },
 
