@@ -7,6 +7,7 @@ import { resolvers } from './resolvers.js';
 
 import { readFile } from 'node:fs/promises';
 import { read } from 'node:fs';
+import { getUser } from './db/users.js';
 
 const PORT = 9000;
 
@@ -17,8 +18,12 @@ app.post('/login', handleLogin);
 
 const typeDefs = await readFile('./schema.graphql', 'utf-8');
 
-function getContext({ req }) {
-  return { auth: req.auth };
+async function getContext({ req }) {
+  if (req.auth) {
+    const user = await getUser(req.auth.sub);
+    return { user };
+  }
+  return {};
 }
 
 const apolloServer = new ApolloServer({ typeDefs, resolvers });
