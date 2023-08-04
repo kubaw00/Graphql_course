@@ -66,15 +66,19 @@ export const createJobMutation = gql`
   ${jobDetailFragment}
 `;
 export const jobsQuery = gql`
-  query {
-    jobs {
-      title
-      id
-      date
-      company {
-        name
+  query GetJobs($limit: Int, $offset: Int) {
+    jobs(limit: $limit, offset: $offset) {
+      items {
+        title
+        description
         id
+        date
+        company {
+          name
+          id
+        }
       }
+      totalCount
     }
   }
 `;
