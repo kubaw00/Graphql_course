@@ -65,35 +65,48 @@ export const createJobMutation = gql`
   }
   ${jobDetailFragment}
 `;
-
-export async function createJob({ title, description }) {
-  const mutation = gql`
-    mutation CreateJob($input: CreateJobInput!) {
-      job: createJob(input: $input) {
-        ...JobDetail
+export const jobsQuery = gql`
+  query {
+    jobs {
+      title
+      id
+      date
+      company {
+        name
+        id
       }
     }
-    ${jobDetailFragment}
-  `;
-  const { data } = await apolloClient.mutate({
-    mutation,
-    variables: {
-      input: {
-        title,
-        description,
-      },
-    },
-    update: (cache, { data }) => {
-      cache.writeQuery({
-        query: getJobByIdQuery,
-        variables: { id: data.job.id },
-        data,
-      });
-    },
-  });
+  }
+`;
 
-  return data.job;
-}
+// export async function createJob({ title, description }) {
+//   const mutation = gql`
+//     mutation CreateJob($input: CreateJobInput!) {
+//       job: createJob(input: $input) {
+//         ...JobDetail
+//       }
+//     }
+//     ${jobDetailFragment}
+//   `;
+//   const { data } = await apolloClient.mutate({
+//     mutation,
+//     variables: {
+//       input: {
+//         title,
+//         description,
+//       },
+//     },
+//     update: (cache, { data }) => {
+//       cache.writeQuery({
+//         query: getJobByIdQuery,
+//         variables: { id: data.job.id },
+//         data,
+//       });
+//     },
+//   });
+
+//   return data.job;
+// }
 
 // export async function deleteJob({ id }) {
 //   const mutation = gql`
@@ -144,17 +157,3 @@ export const companyQuery = gql`
 //   });
 //   return data.job;
 // }
-
-export const jobsQuery = gql`
-  query {
-    jobs {
-      title
-      id
-      date
-      company {
-        name
-        id
-      }
-    }
-  }
-`;
